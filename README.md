@@ -376,10 +376,206 @@ Methods:
 * Set
 * Has
 ## Exploring Typed Arrays
-
+Designed to handle direct memory allocation
 
 ### Defined Type Arrays
-### Typed Arrays vs Standard Arrays
-### Creating Typed Array Buffers
-### Access Typed Arrays and Views
+* Typed Arrays:
+    Array-like objects that provide a mechanism for accessing raw binary data.
 
+Works great with alot of data
+
+#### Benefits of Typed Arrays
+* Accessing raw Binary data
+* Faster performance
+* Strictly controlled data
+* API that support typed arrays
+
+#### APIs that support Typed Arrays
+* WebGL
+* Canvas
+* Web Audio API
+* XMLHttpRequests
+* Fetch API
+* Web Sockets
+* Web Workers
+* Media Source API
+* File APIs
+
+#### Typed Array Structure
+THe key to the Typed Array structure is to create an Array Buffer with defined number of Bytes
+Defined in the javascript file but the Javascript file can't communicate directly to the Array Buffer
+to get the functionality of the array you must create a view.
+
+#### Types of Buffer Arrays:
+* UInt8Array
+* UInt16Array
+* UInt32Array
+* Float64Array
+
+Depending on the type of view you create you'll have different sets of structure in there that contain different types of bytes there.
+The key is how many bytes you initially create
+
+#### Array Buffer 16 Bytes:
+* UInt8Array 1 byte each with 16 different sections
+    I can only use certain types of numbers
+
+* UInt16Array 2 bytes each with only 8 different sections
+
+* Uint32Array I can work with higher numbers but only  4 bytes each section i only have 4 spots to work wiht
+
+* Float64Array 8 byte each so larger numbers but only 2 sections with 8 bytes each
+
+Inside your JavaScript you communicate to these views
+i defined the number I am working with
+I defined the spot that that number will be stored in that array
+
+Remember you are communicating with these different spots
+It auto creates the spots with a starting number 0
+
+#### what kind of numbers?
+* UInt8Array 0-255,  1byte, size 8-bit unsigned integer
+* UInt16Array 0-65535, 2byte size, 16-bit unsigned integer
+* UInt32Array 0-4294967295, 4byte size, 32-bit unsigned integer
+* Float64Array 5.0x10-324 to 1.8x10308, 8byte size, 64-bit IEEE floating point number
+
+### Typed Arrays vs Standard Arrays
+
+Standard Array                  Typed Array
+* Accept most data types        Restricted Data Types
+* Standard Variable storage     Binary data
+* Standard processing           Faster processing
+*                               Once in view, acts like array
+*                               Native APIs
+
+### Creating Typed Array Buffers
+```javascript
+let testBuffer = new ArrayBuffer(16);
+```
+can test it exist by doing:
+```javascript
+if(testBuffer.byteLength === 16) alert('yes')
+```
+
+### Access Typed Arrays and Views
+```javascript
+// create view
+let view1 = new Int8Array(testBuffer);
+view1[0] = 32;
+console.log(view1)
+
+//result
+Int8Array(16) [32, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+buffer: ArrayBuffer(16)
+byteLength: 16
+byteOffset: 0
+length: 16
+0: 32
+1: 0
+2: 0
+3: 0
+4: 0
+5: 0
+6: 0
+7: 0
+8: 0
+9: 0
+10: 0
+11: 0
+12: 0
+13: 0
+14: 0
+15: 0
+Symbol(Symbol.toStringTag): undefined
+__proto__: TypedArray
+```
+
+because it is an in8 we can't do anything above 127 if we do
+here is what happens
+```javascript
+view1[2] = 132;
+console.log(view1)
+//results
+0: 32
+1: 0
+2: -124 // ?? work with the correct data used clamped array for error checking
+3: 0
+4: 0
+5: 0
+6: 0
+7: 0
+8: 0
+```
+
+if we change to int16:
+```javascript
+let testBuffer = new ArrayBuffer(16);
+
+// View
+let view1 = new Int16Array(testBuffer);
+
+view1[0] = 32;
+console.log(view1);
+
+//results
+Int16Array(8) [32, 0, 0, 0, 0, 0, 0, 0]
+buffer: ArrayBuffer(16)
+byteLength: 16
+byteOffset: 0
+length: 8
+0: 32
+1: 0
+2: 0
+3: 0
+4: 0
+5: 0
+6: 0
+7: 0
+Symbol(Symbol.toStringTag): undefined
+__proto__: TypedArray
+```
+
+#### Creating & Setting DataView:
+```javascript
+//DataView
+let view2 = new DataView(testBuffer);
+
+view2.setInt8(2, 43);
+console.log(view2);
+
+//results
+DataView(16) {}
+buffer: ArrayBuffer(16)
+[[Int8Array]]: Int8Array(16) [32, 0, 43, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+[[Uint8Array]]: Uint8Array(16) [32, 0, 43, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+[[Int16Array]]: Int16Array(8) [32, 43, 0, 0, 0, 0, 0, 0]
+[[Int32Array]]: Int32Array(4) [2818080, 0, 0, 0]
+byteLength: 16
+__proto__: ArrayBuffer
+byteLength: 16
+byteOffset: 0
+__proto__: DataView
+```
+#### Access data in view
+```javascript
+let num = view2.getInt8(2);
+console.log(num)
+
+//results
+43
+```
+
+#### Create Dataview that only handles a subset of the buffer:
+```javascript
+// GO in to define how many number we want to work with inside of a certain view
+let view4 = new DataView(testBuffer, 7, 3);
+
+view4.setInt8(0, 54);
+view4.setInt8(1, 23);
+view4.setInt8(2, 32);
+console.log("View4", view4);
+console.log("View1 post Views creations", view1);
+
+let numAlert = console.log(view4.getInt8(0))
+//result:
+54
+```
