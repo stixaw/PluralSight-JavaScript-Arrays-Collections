@@ -216,13 +216,168 @@ maps add functionality on top of sets
 Maps uses key-value pairs and keeps the original insertion order of the keys.
 Any value (objects and primitive values) may be used as either a key or a value.
 
+#### Map Values
+Key Value
 
+set1.add(value) is how you add to a set
+map1.set(key, value) //similar to a dictionary in Python
 
+Map
+('sale', 200), (100, 'label'), (myFunc(), 300), ({sale: 100}, 200)
+   Strings        Numbers          Functions	     Objects
+
+Arrays do not iterate in order...
+Map iterates in order
+
+#### Properties and Methods for Maps
+ Props: Size
+ Methods: Clear, Delete, Entries, forEach, Get, Set, Has, Keys, Values
 ### Adding and Removing Values in a Map
+```javascript
+const monthlySales = new Map();
+
+// Add Sales
+function addSale(){
+    monthlySales.set(newMonth.value, Number.parseInt(newAmount.value));
+    console.log(monthlySales);
+    console.log(monthlySales.size)
+}
+
+```
+Map(2) {"2020-12" => 1200, "2020-11" => 1400}
+	[[Entries]]
+		0: {"2020-12" => 1200}
+		1: {"2020-11" => 1400}
+	size: 2
+
+```javascript
+// access key value by key
+function findSale(){
+    console.log(monthlySales.has('newSale'));
+    console.log(monthlySales.get('newSale'));
+}
+```
+result: true 1500
+
+```javascript
+// Delete sale by key
+function deleteSale() {  
+    console.log(monthlySales.delete('newSale'))
+}
+```
+result: true
+find sale for newSale result: undefined so it is deleted
 ### Iterating through a Map
+
+forEach and for/of area available
+```javascript
+function addSale(){
+    yearlyTotal = 0;
+
+    monthlySales.set(newMonth.value, Number.parseInt(newAmount.value));
+    monthlySalesChart.data.labels = Array.from(monthlySales.keys());
+   
+    monthlySalesChart.data.datasets.forEach((dataset) => {
+        dataset.data = [];
+    })
+
+    for(let amount of monthlySales.values()){
+        yearlyTotal = amount + yearlyTotal;
+        yearlyLabel.innerHTML = `$${yearlyTotal}`;
+
+        monthlySalesChart.data.datasets.forEach((dataset) => {
+            dataset.data.push(amount);
+        })
+    }
+
+    monthlySalesChart.update();
+}
+```
 ### Difference between Maps and Objects
+
+why not use objects?
+
+#### Differences:
+Faster Searching with Maps
+
+#### Object:
+* key must be simple datatypes
+* Integer
+* Strings
+* Symbols
+* Nothing More
+
+#### Map:
+* Key can be any data type
+* Object
+* Array
+* Function
+
+#### Element Order:
+Objects and Arrays can't guarantee insertion order
+Maps Retain insertion order
+
+#### Inheritance
+maps inherit from Object
+Object is not inherited from a map
+
+#### Functional Differences
+##### Creating
+##### Object
+var obj = {};
+var obj = new Object();
+var obj = Object.create(null);
+
+##### Map
+var map = new Map();
+
+##### Getting:
+##### Object
+* obj.id
+* obj.['id']
+
+##### Map
+* map.get('key')
+
+##### Checking
+##### Object
+Object - var isExist = obj.id === 'someid'
+isExist = 'id' in obj.
+
+##### Map
+map.has('key')
+
+##### Adding
+##### Object
+obj['gender'] = 'female'
+obj.gender = 'male'
+
+##### Map
+map.set('gender', 'female')
+
+##### Size
+##### Object
+object.keys(obj).length
+
+##### Map
+map.size
 ### Understanding the Difference of Maps and WeakMaps
+makes it so data is not available out of the codeblock
+#### WeakMaps
+* keys must be objects
+* objects are held weakly
+* not iterable
+* garbage collected
+* not enumerable
+
+Methods:
+* Delete
+* Get
+* Set
+* Has
 ## Exploring Typed Arrays
+
+
 ### Defined Type Arrays
 ### Typed Arrays vs Standard Arrays
 ### Creating Typed Array Buffers

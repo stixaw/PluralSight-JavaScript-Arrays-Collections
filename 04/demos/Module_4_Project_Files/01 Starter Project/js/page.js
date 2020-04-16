@@ -11,41 +11,78 @@ let huntingRadio = document.getElementById('hunting');
 // Monthly Totals
 var yearlyTotal = 0;
 
+const monthlySales = new Map();
+
+{
+    let salesA = {
+        a:[1,2]
+    }
+    var map = new WeakMap()
+    map.set(salesA, 'Hiking');
+
+    console.log('First', salesA)
+}
+// console.log('Second', salesA);
+
 // Add Sales
 function addSale(){
-	
+    yearlyTotal = 0;
+
+    monthlySales.set(newMonth.value, Number.parseInt(newAmount.value));
+    monthlySalesChart.data.labels = Array.from(monthlySales.keys());
+   
+    monthlySalesChart.data.datasets.forEach((dataset) => {
+        dataset.data = [];
+    })
+
+    for(let amount of monthlySales.values()){
+        yearlyTotal = amount + yearlyTotal;
+        yearlyLabel.innerHTML = `$${yearlyTotal}`;
+
+        monthlySalesChart.data.datasets.forEach((dataset) => {
+            dataset.data.push(amount);
+        })
+    }
+
+    monthlySalesChart.update();
 }
 
+// find sale by key
 function findSale(){
+    console.log(monthlySales.get('newSale'));
+}
 
+// Delete sale by key
+function deleteSale() {  
+    
 }
 
 // Bar chart
-// var monthlySalesChart = new Chart(ctx, {
-//     type: 'bar',
-//     data: {
-//         labels: [],
-//         datasets: [{
-//             label: '# of Sales',
-//             data: [],
-//             backgroundColor: [
-//                 'rgba(238, 184, 104, 1)',
-//                 'rgba(75, 166, 223, 1)',
-//                 'rgba(239, 118, 122, 1)',
-//             ],
-//             borderWidth: 0
-//         }]
-//     },
-//     options: {
-//         scales: {
-//             yAxes: [{
-//                 ticks: {
-//                     beginAtZero: true
-//                 }
-//             }]
-//         }
-//     }
-// });
+var monthlySalesChart = new Chart(ctx, {
+    type: 'bar',
+    data: {
+        labels: [],
+        datasets: [{
+            label: '# of Sales',
+            data: [],
+            backgroundColor: [
+                'rgba(238, 184, 104, 1)',
+                'rgba(75, 166, 223, 1)',
+                'rgba(239, 118, 122, 1)',
+            ],
+            borderWidth: 0
+        }]
+    },
+    options: {
+        scales: {
+            yAxes: [{
+                ticks: {
+                    beginAtZero: true
+                }
+            }]
+        }
+    }
+});
 
 // Pie Chart
 // var deptSalesChart = new Chart(pieCtx, {
